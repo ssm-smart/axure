@@ -295,7 +295,7 @@
             return params.get(name);
         }
 
-        const excelUrl = getQueryParam('excelUrl') || 'sj.xlsx';
+        const excelUrl = getQueryParam('excelUrl') || 'https://ssm-smart.github.io/axure/fujian/sj.xlsx';
 
         fetch(excelUrl)
             .then(res => res.arrayBuffer())
