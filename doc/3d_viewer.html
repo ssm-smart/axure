@@ -1291,13 +1291,30 @@
         });
     }
 
-    var iframes = document.getElementsByTagName('iframe');
-    for(var i=0;i<iframes.length;i++){
-        if(iframes[i].getAttribute('data-label')==='glb'){
-            window.viewerIframeWindow = iframes[i].contentWindow;
-            break;
+    function sendModelCardsTo(label, cards) {
+        var iframes = document.getElementsByTagName('iframe');
+        for(var i=0;i<iframes.length;i++){
+            if(iframes[i].getAttribute('data-label') === label){
+                // 监听3D页面的modelLoaded事件
+                var targetWindow = iframes[i].contentWindow;
+                function onMessage(event) {
+                    if(event.data && event.data.command === 'modelLoaded'){
+                        targetWindow.postMessage({
+                            command: 'setModelCards',
+                            cards: cards
+                        }, '*');
+                        window.removeEventListener('message', onMessage); // 只监听一次
+                    }
+                }
+                window.addEventListener('message', onMessage);
+                break;
+            }
         }
     }
+
+    // 假设 cards1 是 glb 的顶牌，cards2 是 glbrs 的顶牌
+    // sendModelCardsTo('glb', cards1);
+    // sendModelCardsTo('glbrs', cards2);
 
     // 2D/3D切换功能
     document.addEventListener('DOMContentLoaded', function() {
