@@ -258,11 +258,11 @@
 
     <!-- 3. Three.js主逻辑脚本（init、loadModel等） -->
     <script>
-    let scene, camera, renderer, controls;
+        let scene, camera, renderer, controls;
     let composer;
     let outlinePass;
 
-    let modelUrl = '';
+        let modelUrl = '';
     let currentModel = null;
     let modelCardsData = {};
     let modelGroundY = 0;
@@ -356,7 +356,7 @@
         return { texture, width: canvas.width, height: canvas.height };
     }
 
-    function init() {
+        function init() {
         if (!validateThreeJS()) return;
 
         setupScene();
@@ -375,20 +375,20 @@
     }
 
     function setupScene() {
-        scene = new THREE.Scene();
+            scene = new THREE.Scene();
     }
 
     function setupCamera() {
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-        const initialCameraPos = getCameraPositionFromQueryString();
+            const initialCameraPos = getCameraPositionFromQueryString();
         camera.position.copy(initialCameraPos || new THREE.Vector3(2, 2, 2));
     }
 
     function setupRenderer() {
         renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
     }
 
     function setupLightsAndHelpers() {
@@ -399,11 +399,11 @@
         let directionalLightAngle = Number(params.get('directionalLightAngle')) || 180;
 
         ambientLight = new THREE.AmbientLight(0xfffbe6, ambientLightIntensity);
-        scene.add(ambientLight);
+            scene.add(ambientLight);
 
         directionalLight = new THREE.DirectionalLight(0xffffff, directionalLightIntensity);
-        directionalLight.position.set(1, 1, 1).normalize();
-        scene.add(directionalLight);
+            directionalLight.position.set(1, 1, 1).normalize();
+            scene.add(directionalLight);
 
         directionalLight.castShadow = true;
         directionalLight.shadow.radius = (directionalLightAngle / 180) * 10;
@@ -428,10 +428,10 @@
     }
 
     function setupControls() {
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.screenSpacePanning = false;
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
     }
 
     function setupPointerLockControls() {
@@ -509,18 +509,18 @@
         window.addEventListener('resize', onWindowResize, false);
         document.addEventListener('pointerlockchange', onPointerLockChange, false);
         setupButtonListeners();
-    }
+        }
 
-    function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         composer.setSize(window.innerWidth, window.innerHeight);
         if (controls) controls.update();
-    }
+        }
 
-    function animate() {
-        requestAnimationFrame(animate);
+        function animate() {
+            requestAnimationFrame(animate);
         if (controls) controls.update();
         if (mixer) mixer.update(0.016);
         TWEEN.update();
@@ -549,15 +549,15 @@
             placementCube.position.copy(camera.position).add(cameraDirection.multiplyScalar(0.5));
             placementCube.position.y = modelGroundY + (placementCube.geometry.parameters.height / 2);
         }
-    }
-
-    function loadModel(url) {
-        if (!url) {
-            showError('请提供模型URL');
-            return;
         }
 
-        modelUrl = url;
+        function loadModel(url) {
+            if (!url) {
+            showError('请提供模型URL');
+                return;
+            }
+
+            modelUrl = url;
         hideError();
 
         showLoadingProgress(0);
@@ -631,8 +631,8 @@
     }
 
     function disposeCurrentModel() {
-        if (currentModel) {
-            scene.remove(currentModel);
+            if (currentModel) {
+                scene.remove(currentModel);
             currentModel.traverse(child => {
                 if (child.isMesh) {
                     if (child.geometry) child.geometry.dispose();
@@ -645,8 +645,8 @@
                     }
                 }
             });
-            currentModel = null;
-        }
+                currentModel = null;
+            }
 
         modelSprites.forEach(sprite => {
             scene.remove(sprite);
@@ -659,31 +659,31 @@
     }
 
     function setupDracoLoader() {
-        if (!THREE.DRACOLoader || !window.DracoDecoderModule) {
+            if (!THREE.DRACOLoader || !window.DracoDecoderModule) {
              showError('Draco 解码器未安装');
-             console.error('DRACOLoader or DracoDecoderModule is not available.');
+                 console.error('DRACOLoader or DracoDecoderModule is not available.');
              return null;
-        }
-        const dracoLoader = new THREE.DRACOLoader();
+            }
+            const dracoLoader = new THREE.DRACOLoader();
         dracoLoader.setDecoderPath('https://ssm-smart.github.io/axure/three/');
         if (typeof WebAssembly === 'object' && dracoLoader.setDecoderConfig) {
             dracoLoader.setDecoderConfig({ type: 'wasm' });
         } else {
-        dracoLoader.setDecoderConfig({ type: 'js' });
+            dracoLoader.setDecoderConfig({ type: 'js' });
         }
         return dracoLoader;
     }
 
     function autoPositionCameraAndControls(model) {
-            if (!getCameraPositionFromQueryString()) {
+                if (!getCameraPositionFromQueryString()) {
             const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
 
             modelGroundY = box.min.y;
             placementPlane.constant = -modelGroundY;
 
-                const maxDim = Math.max(size.x, size.y, size.z);
+                    const maxDim = Math.max(size.x, size.y, size.z);
             let cameraDistance = Math.abs(maxDim / (2 * Math.tan(camera.fov * (Math.PI / 180) / 2))) * 1.3;
 
             const targetCameraPosition = new THREE.Vector3(
@@ -703,41 +703,41 @@
                 .onUpdate(() => controls.update())
                 .start();
 
-             } else {
+                 } else {
                  const box = new THREE.Box3().setFromObject(model);
-                 const center = box.getCenter(new THREE.Vector3());
-                 if (controls) {
-                     controls.target.copy(center);
-                     controls.update();
+                     const center = box.getCenter(new THREE.Vector3());
+                     if (controls) {
+                         controls.target.copy(center);
+                         controls.update();
+                     }
                  }
-             }
     }
 
-    function showError(message) {
-        const errorDiv = document.getElementById('error-message');
-        if (errorDiv) {
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
         }
-    }
 
-    function hideError() {
-         const errorDiv = document.getElementById('error-message');
-         if (errorDiv) {
-             errorDiv.style.display = 'none';
-         }
-    }
+        function hideError() {
+             const errorDiv = document.getElementById('error-message');
+             if (errorDiv) {
+                 errorDiv.style.display = 'none';
+             }
+        }
 
-    function sendCameraPositionToAxure() {
-        if (camera) {
-            const pos = camera.position;
-            window.parent.postMessage({
+        function sendCameraPositionToAxure() {
+            if (camera) {
+                const pos = camera.position;
+                window.parent.postMessage({
                 command: 'cameraPositionUpdate',
-                position: {
-                    x: pos.x,
-                    y: pos.y,
-                    z: pos.z
-                }
+                    position: {
+                        x: pos.x,
+                        y: pos.y,
+                        z: pos.z
+                    }
             }, '*');
         }
     }
@@ -747,7 +747,7 @@
             const pos = camera.position;
             const posString = `${pos.x}\n${pos.y}\n${pos.z}`;
             copyToClipboard(posString, 'copyCameraPosBtn', '已复制!');
-        } else {
+            } else {
              showError('相机对象未准备好');
         }
     }
@@ -829,7 +829,7 @@
          if (button) {
              const originalText = button.textContent;
              button.textContent = message;
-             setTimeout(() => {
+                 setTimeout(() => {
                  button.textContent = originalText;
              }, 2000);
          }
@@ -883,6 +883,24 @@
         const raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(mouse, camera);
 
+        // 检测顶牌点击
+        const spriteIntersects = raycaster.intersectObjects(Array.from(modelSprites.values()));
+        if (spriteIntersects.length > 0) {
+            const clickedSprite = spriteIntersects[0].object;
+            const modelName = clickedSprite.userData.modelName;
+            const cardText = clickedSprite.userData.cardText;
+            
+            // 发送标识给 Axure
+            window.parent.postMessage({
+                command: 'cardClicked',
+                modelName: modelName,  // 这就是顶牌标识
+                cardText: cardText
+            }, '*');
+            
+            return;
+        }
+
+        // 原有的模型点击逻辑
         if (currentModel) {
             const intersects = raycaster.intersectObject(currentModel, true);
             
@@ -911,7 +929,7 @@
                     .easing(TWEEN.Easing.Quadratic.Out)
                     .onUpdate(() => controls.update())
                     .start();
-                } else {
+                    } else {
                 selectedObject = null;
                 outlinePass.selectedObjects = [];
             }
@@ -991,6 +1009,11 @@
                     });
                     sprite = new THREE.Sprite(material);
                     sprite.scale.set(width * cardScaleFactor, height * cardScaleFactor, 1);
+                    
+                    // 添加点击事件
+                    sprite.userData = { modelName: object.name, cardText: cardText };
+                    sprite.material.color.setHex(0xffffff); // 默认颜色
+                    
                     modelSprites.set(object.name, sprite);
                     scene.add(sprite);
                 }
@@ -1180,31 +1203,31 @@
         }
     }
 
-    function getModelUrlFromQueryString() {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('modelUrl');
-    }
+        function getModelUrlFromQueryString() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('modelUrl');
+        }
 
-    function getCameraPositionFromQueryString() {
-         const params = new URLSearchParams(window.location.search);
-         const posX = params.get('posX');
-         const posY = params.get('posY');
-         const posZ = params.get('posZ');
+        function getCameraPositionFromQueryString() {
+             const params = new URLSearchParams(window.location.search);
+             const posX = params.get('posX');
+             const posY = params.get('posY');
+             const posZ = params.get('posZ');
 
-         if (posX !== null && posY !== null && posZ !== null) {
-              return { x: parseFloat(posX), y: parseFloat(posY), z: parseFloat(posZ) };
-         } else {
+             if (posX !== null && posY !== null && posZ !== null) {
+                  return { x: parseFloat(posX), y: parseFloat(posY), z: parseFloat(posZ) };
+             } else {
               return null; 
-         }
-    }
+             }
+        }
 
     setTimeout(function() {
-    init();
+        init();
 
-    const initialModelUrl = getModelUrlFromQueryString();
-    if (initialModelUrl) {
-        loadModel(initialModelUrl);
-    } else {
+        const initialModelUrl = getModelUrlFromQueryString();
+        if (initialModelUrl) {
+            loadModel(initialModelUrl);
+        } else {
             console.warn('No initial modelUrl provided in the URL. Please provide it as a query parameter.');
             showError('请在URL中添加modelUrl参数，例如: ?modelUrl=your_model.glb');
         }
@@ -1221,7 +1244,7 @@
                 playAllAnimations();
             } else if (Array.isArray(e.data.name)) {
                 playAnimationsByNames(e.data.name);
-            } else {
+                } else {
                 playAnimationByName(e.data.name);
             }
         } else if (e.data.command === 'stopAllAnimations') {
