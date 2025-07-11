@@ -726,7 +726,9 @@
     }
 
     // ========== 全局挂载放在最后 ==========
-    window.AxhubGLBViewer = {
+    if (typeof window !== 'undefined') {
+      window.AxhubGLBViewer = {
         render: render
-    };
+      };
+    }
 })();
